@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  elasticsearch:
+    image: elasticsearch:5.5.0
+    container_name: elasticsearch
+    expose:
+      - 9200
+    ports:
+      - "9200:9200"
+    environment:
+      transport.host: 127.0.0.1
+      http.host: 0.0.0.0
+
+  zookeper:
+    image: wurstmeister/zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: wurstmeister/kafka
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: localhost
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+
+  jaeger:
+    image: jaegertracing/all-in-one
+    container_name: jaeger
+    ports:
+      - "6832:6832/udp"
+      - "16686:16686" # UI
+    environment:
+      SPAN_STORAGE_TYPE: memory
+
